@@ -1,7 +1,6 @@
 from settings import Settings
 from gui.gui import GUI
 
-
 class RacingLineOptimiser:
     """Overall class to manage app's assets and behavior."""
     
