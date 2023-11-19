@@ -5,7 +5,8 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 from settings import Settings 
-from gui.upload_button import UploadButton
+#from gui.upload_button import UploadButton
+from gui.upload_features import *
 from gui.export_button import ExportButton
 
 class GUI(tk.Tk):
@@ -28,20 +29,24 @@ class GUI(tk.Tk):
 
         # Create a FigureCanvasTkAgg for plotting Track Coords
         self.canvas = FigureCanvasTkAgg(self.figure, master=self)
-        self.canvas.get_tk_widget().grid(row=1, column=0, sticky='nsew')
+        self.canvas.get_tk_widget().grid(row=1, column=0, rowspan=8, columnspan=2, sticky='nsew')
+        
+        # Create instance of UploadFeatures
+        self.upload_features = UploadFeatures(self)
 
         # Create an instance of UploadButton
-        upload_button = UploadButton(self, upload_callback=self.upload_coordinates)
-        upload_button.grid(row=1, column=1, pady=40, padx=10, sticky='ne')
+        # upload_button = UploadButton(self, upload_callback=self.upload_coordinates)
+        # upload_button.grid(row=1, column=1, pady=40, padx=10, sticky='ne')
+        
+
 
         # Create an instance of ExportButton
         export_button = ExportButton(self, export_callback=self.export_coordinates)
-        #export_button.place(x=300, y=200)
-        #export_button.grid_propagate(False)
 
-    def upload_coordinates(self, file_path):
-        # Forward the call to the RacingLineOptimiser's method
-        rlo.upload_coordinates(file_path)
+
+    # def upload_coordinates(self, file_path):
+    #     # Forward the call to the RacingLineOptimiser's method
+    #     rlo.upload_coordinates(file_path)
         
     def export_coordinates(self, file_path):
         # Forward the call to the RacingLineOptimiser's method
