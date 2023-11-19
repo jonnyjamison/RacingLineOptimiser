@@ -41,11 +41,11 @@ class GUI(tk.Tk):
 
     def upload_coordinates(self, file_path):
         # Forward the call to the RacingLineOptimiser's method
-        upload_button.upload_coordinates(file_path)
+        rlo.upload_coordinates(file_path)
         
     def export_coordinates(self, file_path):
         # Forward the call to the RacingLineOptimiser's method
-        export_button.export_coordinates(file_path)
+        rlo.export_coordinates(file_path)
 
     def start(self):
         # Start the Tkinter main loop
