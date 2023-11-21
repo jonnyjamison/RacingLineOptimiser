@@ -1,22 +1,22 @@
 import tkinter as tk
-from tkinter import ttk
-from tkinter import filedialog
-from tkinter import Button
-from tkinter.ttk import Label, LabelFrame, Style
+from tkinter import *
+#from tkinter import filedialog
+#from tkinter import Button
+#from tkinter.ttk import Label, LabelFrame, Style
 import os
 
 class UploadFeatures: 
     
     def __init__(self,master):
         
-        # Configure Labelframe BG Colour to match GUI
-        self.style = Style()
-        GUI_bg = master.cget('background')
+        # Create a Style instance
+        #self.style = ttk.Style()
 
-        # Set the background color of all widgets with style 'Transparent.TLabelframe'
-        self.style.configure('Transparent.TLabelframe', background=GUI_bg)
+        # Configure the style for the LabelFrame
+        #self.style.configure('My.TLabelframe', background='aqua', font=('Arial', 12))
 
-        self.upload_label_frame = LabelFrame(master, text='Please Configure File for Upload', style='Transparent.TLabelframe')
+        # Create the LabelFrame with the configured style
+        self.upload_label_frame = LabelFrame(master, text='Please Configure File for Upload')
         self.upload_label_frame.grid(row=1, column=3, columnspan=3, rowspan=4, sticky='ne', pady=40, padx=5)
 
         self.label_inside_frame = Label(self.upload_label_frame, text='Label inside the frame')
