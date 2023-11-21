@@ -1,6 +1,8 @@
-from PIL import Image, ImageTk
+from PIL import ImageTk
+from PIL.Image import open as pil_open
 import tkinter as tk
 from tkinter import ttk
+from tkinter.ttk import Label, LabelFrame, Style
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
@@ -16,9 +18,9 @@ class GUI(tk.Tk):
         # Configure the main window
         self.title('Racing Line Optimser')
         self.geometry(rlo.settings.window_size)
-        
+                
         # Load and place logo 
-        logo_image = Image.open('images/logo.png')
+        logo_image = pil_open('images/logo.png')
         self.logo = ImageTk.PhotoImage(logo_image)
         self.image_label = tk.Label(self, image=self.logo)
         self.image_label.grid(row=0, column=0, sticky='nw') 
@@ -38,8 +40,6 @@ class GUI(tk.Tk):
         # upload_button = UploadButton(self, upload_callback=self.upload_coordinates)
         # upload_button.grid(row=1, column=1, pady=40, padx=10, sticky='ne')
         
-
-
         # Create an instance of ExportButton
         export_button = ExportButton(self, export_callback=self.export_coordinates)
 
