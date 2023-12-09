@@ -26,7 +26,7 @@ class GUI(tk.Tk):
         self.image_label.grid(row=0, column=0, sticky='nw') 
 
         # Create a Matplotlib figure to plot Track Coordinates
-        self.figure, self.ax = plt.subplots(figsize=(7, 6)) # width, height
+        self.figure, self.ax = plt.subplots(figsize=(3, 3)) # width, height
         self.ax.set_title('Track')
 
         # Create a FigureCanvasTkAgg for plotting Track Coords

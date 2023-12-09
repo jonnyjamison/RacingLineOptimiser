@@ -1,0 +1,37 @@
+TODO
+
+- Make plot size and window size dynamic, according to screen size
+
+- Fix background colour
+
+- Package app with dependancies
+
+- If track name is too long, replace remaining characters with '...' as to not make label frame move.
+
+- Style buttons (tkinter by example page 100) http:/ / effbot. org/ tkinterbook/ tkinter- widget- styling. htm.
+
+- Make Generate button greyed out until file selected and width input - if either self.track_coordinates or self.trackwidth is == 0 
+
+
+- Make size of track width input box smaller
+
+
+- Save instance??
+
+- Use stick to resize features?
+
+- check to see if IFF is of correct format. Pop up error if not. 
+
+
+2. Select vehicle - 3 Radio buttons with default vehicles (Car, Van, Racecar)
+	- edit button which allows a user to change the velocity / g map (makes pop up appear)
+		- plot the 3 lines on same graph, like carmaker
+		- include defaults in json file, read in each time
+		- upload in cell, like CarMaker
+	- nice logo of each 
+
+3. Racing Line optimiser parameters - 
+	- select from different options of algorithm
+	- Edit hyper parameters for each algorithm
+	- Radio buttons to select multiple algorithms 
+

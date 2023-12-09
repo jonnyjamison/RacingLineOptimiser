@@ -9,34 +9,44 @@ class UploadFeatures:
     
     def __init__(self,master):
         
-        # Create a Style instance
-        #self.style = ttk.Style()
+        self.master = master
 
-        # Configure the style for the LabelFrame
-        #self.style.configure('My.TLabelframe', background='aqua', font=('Arial', 12))
-        
-        self.upload_label_frame = LabelFrame(master, text='Please Configure File for Upload')
+        # Initialise variables
+        self.track_coordinates = 0
+        self.trackwidth = 0
+
+        # Create label frame for upload track options        
+        self.upload_label_frame = LabelFrame(master, text='1. Please Select Track Coordinates')
         self.upload_label_frame.grid(row=1, column=4, columnspan=10, rowspan=2, sticky='nsew', pady=40, padx=100)
         
         # Configure column weights to make the label frame expand
         for i in range(10):  # Assuming you have 6 columns, adjust as needed 
             master.columnconfigure(i, weight=1)
-
-        # self.label_inside_frame = Label(self.upload_label_frame, text='Label inside the frame')
-        # self.label_inside_frame.grid(row=0, column=0)
-        
-        
-        
-        # upload_button = UploadButton(self, upload_callback=self.upload_coordinates)
-        # upload_button.grid(row=1, column=1, pady=40, padx=10, sticky='ne')
         
         # Create an Upload button 
         self.upload_button = Button(self.upload_label_frame, text= 'Upload', command=self.upload_coordinates)
         self.upload_button.grid(row=0, column=0,sticky='nw', pady=5, padx=10)
+
+        # Create a label which updates to display track
         self.filepath_label = Label(self.upload_label_frame, text="Please Select File")
         self.filepath_label.grid(row=0, column=1)
-        
-        
+
+        # Create a label for Track Width
+        self.trackwidth_label = Label(self.upload_label_frame, text="Track Width:")
+        self.trackwidth_label.grid(row=1, column=0) 
+
+        # Create input box for Track Width
+        self.trackwidth = tk.IntVar()
+        self.trackwidth_input = tk.Entry(self.upload_label_frame, textvar=self.trackwidth)
+        self.trackwidth_input.grid(row=1, column=1, sticky='w', padx = 10) 
+
+        # Create button to plot track
+        self.plot_button = Button(self.upload_label_frame, text= 'Plot', command=self.plot_coordinates)
+        self.plot_button.grid_propagate(False)
+        self.plot_button.grid(row=2, column=0, pady=5, padx=25)
+
+
+
     def upload_coordinates(self):
         # Use file dialoug for user to select track coordinates
         file_path = filedialog.askopenfilename(title='Select Coordinates File', filetypes=[('Text files', '*.txt'), ('All files', '*.*')])
@@ -51,23 +61,59 @@ class UploadFeatures:
             self.process_coordinates(file_path)
             
     def process_coordinates(self,file_path):
-        # Method to handle the uploaded coordinates file path
+        # Method to process the uploaded coordinates
    
         try:
             with open(file_path, 'r') as file:
                 
-                print("TODO - handle coordinates upload")
-                # Read each line from the file
-                #for line in file:
+                self.track_x = []
+                self.track_y = []
+
+                # Skip the header line
+                next(file)
+                
+                # Initialize track_coordinates as an empty list
+                self.track_coordinates = []
+
+                for line in file:
                     # Split the line into x and y coordinates
-                    #x, y = map(float, line.split())
-                    
-                    
-                    #print(f"Extracted coordinates: x={x}")
-                    
-            # Call the provided callback with the extracted coordinates
-            #self.upload_callback(file_path)
+                    values = line.split()
+
+                    # Check if the line has at least two columns
+                    if len(values) >= 2:
+                        try:
+                            # Convert the values to integers and append to track_coordinates
+                            x = int(float(values[0]))
+                            y = int(float(values[1]))
+                            self.track_coordinates.append((x, y))
+                        except ValueError as e:
+                            print(f"Error converting values to integers: {e}")
+                    else:
+                        print("Skipping line with insufficient columns:", line.strip())
+
             
         except Exception as e:
             # Handle any exceptions that may occur during file processing
             print(f"Error processing file: {e}")
+
+
+
+    def plot_coordinates(self):
+    # Check if track coordinates are available
+        
+        if self.track_coordinates:
+            # Clear the axis (not the entire figure)
+            self.master.ax.clear()
+
+            # Create a scatter plot for the track coordinates
+            self.master.ax.scatter(*zip(*self.track_coordinates), label='Track Coordinates', marker='o', color='blue')
+
+            # Set plot title
+            self.master.ax.set_title('Track')
+
+            # Redraw canvas
+            self.master.canvas.draw()
+
+
+        else:
+            print("No track coordinates available. Upload coordinates first.")
