@@ -4,6 +4,7 @@ from tkinter import filedialog
 #from tkinter import Button
 #from tkinter.ttk import Label, LabelFrame, Style
 import os
+from matplotlib.lines import Line2D
 
 class UploadFeatures: 
     
@@ -97,23 +98,60 @@ class UploadFeatures:
             print(f"Error processing file: {e}")
 
 
-
     def plot_coordinates(self):
-    # Check if track coordinates are available
-        
-        if self.track_coordinates:
-            # Clear the axis (not the entire figure)
-            self.master.ax.clear()
+        # Check if track coordinates are available
+        if self.track_coordinates and self.trackwidth.get() > 0:
+            # Clear the legend
+            self.master.ax.legend().remove()
 
-            # Create a scatter plot for the track coordinates
-            self.master.ax.scatter(*zip(*self.track_coordinates), label='Track Coordinates', marker='o', color='blue')
-
-            # Set plot title
-            self.master.ax.set_title('Track')
-
+            # Plot centre line
+            centre_line = self.master.ax.plot(*zip(*self.track_coordinates), label='Centre Line', color='red', linestyle='--', dashes=(5, 2))
+            
+            # Determine track boundaries
+            self.get_track_boundaries(self)
+            # THIS SHOULD ASSIGN INSIDE AND OUTSIDE TO ATTRIBUTES??
+            
+            
             # Redraw canvas
             self.master.canvas.draw()
+            
+            # Calculate outside track coordinates based on inside track coordinates and track width
+            # outside_coordinates = [(x + self.trackwidth.get(), y) for x, y in self.track_coordinates]
+            # outside_line = self.master.ax.plot(*zip(*outside_coordinates), label='Outside Track', color='blue')
+                        
+            # # Create Line2D object for the original line (dashed)
+            # original_line = Line2D(*zip(*self.track_coordinates), label='Original Track', linestyle='--', color='green')
 
+            # # Add the lines to the axes
+            # self.master.ax.add_line(inside_line)
+            # self.master.ax.add_line(outside_line)
+            # self.master.ax.add_line(original_line)
+
+            # # Set plot title
+            # self.master.ax.set_title('Track')
+
+            # # Redraw canvas
+            # self.master.canvas.draw()
+            
+            # # Set axis limits based on track coordinates
+            # min_x = min(min(self.track_coordinates, key=lambda x: x[0])[0], min(outside_coordinates, key=lambda x: x[0])[0])
+            # max_x = max(max(self.track_coordinates, key=lambda x: x[0])[0], max(outside_coordinates, key=lambda x: x[0])[0])
+            # min_y = min(min(self.track_coordinates, key=lambda x: x[1])[1], min(outside_coordinates, key=lambda x: x[1])[1])
+            # max_y = max(max(self.track_coordinates, key=lambda x: x[1])[1], max(outside_coordinates, key=lambda x: x[1])[1])
+
+            # self.master.ax.set_xlim(min_x, max_x)
+            # self.master.ax.set_ylim(min_y, max_y)
+        else:
+            print("Invalid track coordinates or track width. Upload coordinates and set track width first.")
+
+
+    def get_track_boundaries(self):
+        # Check if track coordinates and track width are available
+        if self.track_coordinates and self.trackwidth.get() > 0:
+            
+            # Get the track width
+            track_width = self.trackwidth.get()
 
         else:
-            print("No track coordinates available. Upload coordinates first.")
+            print("Invalid track coordinates or track width. Upload coordinates and set track width first.")
+            return []
