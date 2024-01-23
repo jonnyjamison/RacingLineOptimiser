@@ -5,6 +5,7 @@ from tkinter import filedialog
 #from tkinter.ttk import Label, LabelFrame, Style
 import os
 from matplotlib.lines import Line2D
+import numpy as np
 
 class UploadFeatures: 
     
@@ -76,23 +77,31 @@ class UploadFeatures:
                 # Initialize track_coordinates as an empty list
                 self.track_coordinates = []
 
-                for line in file:
-                    # Split the line into x and y coordinates
-                    values = line.split()
+                # for line in file:
+                #     # Split the line into x and y coordinates
+                #     values = line.split()
 
-                    # Check if the line has at least two columns
-                    if len(values) >= 2:
-                        try:
-                            # Convert the values to integers and append to track_coordinates
-                            x = int(float(values[0]))
-                            y = int(float(values[1]))
-                            self.track_coordinates.append((x, y))
-                        except ValueError as e:
-                            print(f"Error converting values to integers: {e}")
-                    else:
-                        print("Skipping line with insufficient columns:", line.strip())
+                #     # Check if the line has at least two columns
+                #     if len(values) >= 2:
+                #         try:
+                #             # Convert the values to integers and append to track_coordinates
+                #             x = int(float(values[0]))
+                #             y = int(float(values[1]))
+                #             self.track_coordinates.append((x, y))
+                #         except ValueError as e:
+                #             print(f"Error converting values to integers: {e}")
+                #     else:
+                #         print("Skipping line with insufficient columns:", line.strip())
+                
+                
+                # Skip the header line
+                next(file)
+                
+                # Load track coordinates into NumPy array
+                self.track_coordinates = np.loadtxt(file, skiprows=0, usecols=(0, 1))
 
-            
+                    
+                
         except Exception as e:
             # Handle any exceptions that may occur during file processing
             print(f"Error processing file: {e}")
@@ -100,58 +109,46 @@ class UploadFeatures:
 
     def plot_coordinates(self):
         # Check if track coordinates are available
-        if self.track_coordinates and self.trackwidth.get() > 0:
+        if self.track_coordinates.size and self.trackwidth.get() > 0:
             # Clear the legend
             self.master.ax.legend().remove()
 
             # Plot centre line
-            centre_line = self.master.ax.plot(*zip(*self.track_coordinates), label='Centre Line', color='red', linestyle='--', dashes=(5, 2))
+            centre_line = self.master.ax.plot(*zip(*self.track_coordinates), label='Centre Line', color='blue', linestyle='--', dashes=(5, 2))
             
             # Determine track boundaries
-            self.get_track_boundaries(self)
+            self.get_track_boundaries()
             # THIS SHOULD ASSIGN INSIDE AND OUTSIDE TO ATTRIBUTES??
             
-            
+            # Plot inside and outside track boundaries
+            inside_line = self.master.ax.plot(*zip(*self.track_inside_line), label='Inside Line', color='red', linestyle='-')
+            outside_line = self.master.ax.plot(*zip(*self.track_outside_line), label='Outside Line', color='green', linestyle='-')
+
             # Redraw canvas
             self.master.canvas.draw()
             
-            # Calculate outside track coordinates based on inside track coordinates and track width
-            # outside_coordinates = [(x + self.trackwidth.get(), y) for x, y in self.track_coordinates]
-            # outside_line = self.master.ax.plot(*zip(*outside_coordinates), label='Outside Track', color='blue')
-                        
-            # # Create Line2D object for the original line (dashed)
-            # original_line = Line2D(*zip(*self.track_coordinates), label='Original Track', linestyle='--', color='green')
-
-            # # Add the lines to the axes
-            # self.master.ax.add_line(inside_line)
-            # self.master.ax.add_line(outside_line)
-            # self.master.ax.add_line(original_line)
-
-            # # Set plot title
-            # self.master.ax.set_title('Track')
-
-            # # Redraw canvas
-            # self.master.canvas.draw()
-            
-            # # Set axis limits based on track coordinates
-            # min_x = min(min(self.track_coordinates, key=lambda x: x[0])[0], min(outside_coordinates, key=lambda x: x[0])[0])
-            # max_x = max(max(self.track_coordinates, key=lambda x: x[0])[0], max(outside_coordinates, key=lambda x: x[0])[0])
-            # min_y = min(min(self.track_coordinates, key=lambda x: x[1])[1], min(outside_coordinates, key=lambda x: x[1])[1])
-            # max_y = max(max(self.track_coordinates, key=lambda x: x[1])[1], max(outside_coordinates, key=lambda x: x[1])[1])
-
-            # self.master.ax.set_xlim(min_x, max_x)
-            # self.master.ax.set_ylim(min_y, max_y)
         else:
             print("Invalid track coordinates or track width. Upload coordinates and set track width first.")
 
 
     def get_track_boundaries(self):
-        # Check if track coordinates and track width are available
-        if self.track_coordinates and self.trackwidth.get() > 0:
-            
-            # Get the track width
-            track_width = self.trackwidth.get()
+   
+        # Get the track width
+        track_width = self.trackwidth.get()
 
-        else:
-            print("Invalid track coordinates or track width. Upload coordinates and set track width first.")
-            return []
+        # Assuming perpendicular_vector is a constant vector
+        perpendicular_vector = np.array([1.0, 1.0])  # Use floating-point numbers
+        perpendicular_vector /= np.linalg.norm(perpendicular_vector)
+
+        # Normalize the perpendicular vector
+        perpendicular_vector /= np.linalg.norm(perpendicular_vector)
+
+        # Calculate the offset for the inside line
+        offset_inside = -0.5 * track_width * perpendicular_vector
+        
+        # Calculate the offset for the outside line (opposite direction)
+        offset_outside = 0.5 * track_width * perpendicular_vector
+
+        # Apply the offsets to the track coordinates
+        self.track_inside_line = self.track_coordinates + offset_inside
+        self.track_outside_line = self.track_coordinates + offset_outside
