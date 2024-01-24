@@ -1,6 +1,7 @@
 #TODO
 #Dynamic placement - update everything to use x y coords, update with window
 # size
+#From ML Script: intersect detector, interpolate  centre coordinates
 
 from settings import Settings
 from gui.gui import GUI

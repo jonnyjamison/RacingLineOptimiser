@@ -1,8 +1,6 @@
 import tkinter as tk
 from tkinter import *
 from tkinter import filedialog
-#from tkinter import Button
-#from tkinter.ttk import Label, LabelFrame, Style
 import os
 from matplotlib.lines import Line2D
 import numpy as np
@@ -68,31 +66,11 @@ class UploadFeatures:
         try:
             with open(file_path, 'r') as file:
                 
-                self.track_x = []
-                self.track_y = []
-
                 # Skip the header line
                 next(file)
                 
                 # Initialize track_coordinates as an empty list
                 self.track_coordinates = []
-
-                # for line in file:
-                #     # Split the line into x and y coordinates
-                #     values = line.split()
-
-                #     # Check if the line has at least two columns
-                #     if len(values) >= 2:
-                #         try:
-                #             # Convert the values to integers and append to track_coordinates
-                #             x = int(float(values[0]))
-                #             y = int(float(values[1]))
-                #             self.track_coordinates.append((x, y))
-                #         except ValueError as e:
-                #             print(f"Error converting values to integers: {e}")
-                #     else:
-                #         print("Skipping line with insufficient columns:", line.strip())
-                
                 
                 # Skip the header line
                 next(file)
@@ -100,8 +78,6 @@ class UploadFeatures:
                 # Load track coordinates into NumPy array
                 self.track_coordinates = np.loadtxt(file, skiprows=0, usecols=(0, 1))
 
-                    
-                
         except Exception as e:
             # Handle any exceptions that may occur during file processing
             print(f"Error processing file: {e}")
@@ -118,11 +94,9 @@ class UploadFeatures:
             
             # Determine track boundaries
             self.get_track_boundaries()
-            # THIS SHOULD ASSIGN INSIDE AND OUTSIDE TO ATTRIBUTES??
-            
-            # Plot inside and outside track boundaries
-            inside_line = self.master.ax.plot(*zip(*self.track_inside_line), label='Inside Line', color='red', linestyle='-')
-            outside_line = self.master.ax.plot(*zip(*self.track_outside_line), label='Outside Line', color='green', linestyle='-')
+                        
+            inside_line = self.master.ax.plot(self.track_inner_x, self.track_inner_y, label='Inside Line', color='red', linestyle='-')
+            outside_line = self.master.ax.plot(self.track_outer_x, self.track_outer_y, label='Outside Line', color='green', linestyle='-')
 
             # Redraw canvas
             self.master.canvas.draw()
@@ -135,20 +109,21 @@ class UploadFeatures:
    
         # Get the track width
         track_width = self.trackwidth.get()
-
-        # Assuming perpendicular_vector is a constant vector
-        perpendicular_vector = np.array([1.0, 1.0])  # Use floating-point numbers
-        perpendicular_vector /= np.linalg.norm(perpendicular_vector)
-
-        # Normalize the perpendicular vector
-        perpendicular_vector /= np.linalg.norm(perpendicular_vector)
-
-        # Calculate the offset for the inside line
-        offset_inside = -0.5 * track_width * perpendicular_vector
         
-        # Calculate the offset for the outside line (opposite direction)
-        offset_outside = 0.5 * track_width * perpendicular_vector
+        # Seperate track coordinates into x and y
+        self.track_x = self.track_coordinates[:,0]
+        self.track_y = self.track_coordinates[:,1]
 
-        # Apply the offsets to the track coordinates
-        self.track_inside_line = self.track_coordinates + offset_inside
-        self.track_outside_line = self.track_coordinates + offset_outside
+        # Normal direction of each vertex
+        dx = np.gradient(self.track_x)
+        dy = np.gradient(self.track_y)
+        
+        # Euclidean distance at each point
+        dL = np.hypot(dx,dy)
+                
+        # Calculate inner & outer coordinates
+        self.track_outer_x = (track_width/2) * (dy/dL) + self.track_x
+        self.track_outer_y = (-1 * (track_width/2)) * (dx/dL) + self.track_y
+        self.track_inner_x = (-1 * (track_width/2)) * (dy/dL) + self.track_x
+        self.track_inner_y = (track_width/2) * (dx/dL) + self.track_y
+        
