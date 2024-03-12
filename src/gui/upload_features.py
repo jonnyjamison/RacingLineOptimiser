@@ -41,7 +41,7 @@ class UploadFeatures:
         self.trackwidth_input.grid(row=1, column=1, sticky='w', padx = 10) 
 
         # Create button to plot track
-        self.plot_button = Button(self.upload_label_frame, text= 'Plot', command=self.plot_coordinates)
+        self.plot_button = Button(self.upload_label_frame, text= 'Generate', command=self.plot_coordinates)
         self.plot_button.grid_propagate(False)
         self.plot_button.grid(row=2, column=0, pady=5, padx=25)
 
@@ -60,6 +60,7 @@ class UploadFeatures:
             # Call the upload_coordinates callback with file path
             self.process_coordinates(file_path)
             
+            
     def process_coordinates(self,file_path):
         # Method to process the uploaded coordinates
    
@@ -71,10 +72,7 @@ class UploadFeatures:
                 
                 # Initialize track_coordinates as an empty list
                 self.track_coordinates = []
-                
-                # Skip the header line
-                next(file)
-                
+                                
                 # Load track coordinates into NumPy array
                 self.track_coordinates = np.loadtxt(file, skiprows=0, usecols=(0, 1))
 
@@ -126,4 +124,8 @@ class UploadFeatures:
         self.track_outer_y = (-1 * (track_width/2)) * (dx/dL) + self.track_y
         self.track_inner_x = (-1 * (track_width/2)) * (dy/dL) + self.track_x
         self.track_inner_y = (track_width/2) * (dx/dL) + self.track_y
+        
+        # Combine outer and inner coordinates
+        self.track_outer_coords = np.column_stack((self.track_outer_x, self.track_outer_y))
+        self.track_inner_coords = np.column_stack((self.track_inner_x, self.track_inner_y))
         

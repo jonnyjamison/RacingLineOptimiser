@@ -6,10 +6,10 @@ from tkinter.ttk import Label, LabelFrame, Style
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
-from settings import Settings 
-#from gui.upload_button import UploadButton
+#from settings import Settings 
 from gui.upload_features import *
 from gui.export_button import ExportButton
+from gui.optimisation_features import OptimisationFeatures
 
 class GUI(tk.Tk):
     def __init__(self,rlo):
@@ -35,19 +35,14 @@ class GUI(tk.Tk):
         
         # Create instance of UploadFeatures
         self.upload_features = UploadFeatures(self)
-
-        # Create an instance of UploadButton
-        # upload_button = UploadButton(self, upload_callback=self.upload_coordinates)
-        # upload_button.grid(row=1, column=1, pady=40, padx=10, sticky='ne')
+        
+        # Create instance of OptimisationFeatures
+        self.optimisation_features = OptimisationFeatures(self,self.upload_features)
         
         # Create an instance of ExportButton
         export_button = ExportButton(self, export_callback=self.export_coordinates)
 
 
-    # def upload_coordinates(self, file_path):
-    #     # Forward the call to the RacingLineOptimiser's method
-    #     rlo.upload_coordinates(file_path)
-        
     def export_coordinates(self, file_path):
         # Forward the call to the RacingLineOptimiser's method
         rlo.export_coordinates(file_path)
