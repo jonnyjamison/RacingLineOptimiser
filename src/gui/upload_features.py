@@ -84,6 +84,10 @@ class UploadFeatures:
     def plot_coordinates(self):
         # Check if track coordinates are available
         if self.track_coordinates.size and self.trackwidth.get() > 0:
+            
+            # Clear the plot
+            self.master.ax.clear()
+                        
             # Clear the legend
             self.master.ax.legend().remove()
 

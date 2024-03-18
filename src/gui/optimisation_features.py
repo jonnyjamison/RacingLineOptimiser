@@ -3,8 +3,6 @@ from tkinter import *
 from tkinter import LabelFrame, Radiobutton
 from optimisation_functions.gradient_descent import gradient_descent
 
-
-
 class OptimisationFeatures: 
     
     def __init__(self,master,upload_features):
@@ -42,10 +40,17 @@ class OptimisationFeatures:
         self.optimise_button = Button(self.optimisation_label_frame, text= 'Optimise', command=self.optimise_track_coordinates)
         self.optimise_button.grid_propagate(False)
         self.optimise_button.grid(row=2, column=1, pady=5, padx=25) 
+                
+        # Disable Optimise button until track coordinates uploaded
+        # if hasattr(self.upload_features, 'track_inner_coords') and self.upload_features.track_inner_coords is not None:
+        #     self.optimise_button.config(state=tk.NORMAL)
+        # else:
+        #     self.optimise_button.config(state=tk.DISABLED)
         
         
     def optimise_track_coordinates(self): #, GD_selected, GA_selected, PS_selected
 
+        print(len(self.upload_features.track_inner_coords))
         
         if self.GD_selected.get():
             print("Performing Gradient Descent Optimisation")
@@ -53,8 +58,18 @@ class OptimisationFeatures:
             # Perform Optimisation
                 # Call GD function
                 # inputs -> inner & outer bounds, max iterations
-            # Plot results
-            gradient_descent(self.upload_features.track_outer_coords, self.upload_features.track_inner_coords, self.max_iterations.get())
+            self.GD_coordinates = gradient_descent(self.upload_features.track_coordinates, self.upload_features.track_outer_coords, 
+            self.upload_features.track_inner_coords, self.max_iterations.get())
+            
+            print(self.upload_features.track_coordinates - self.GD_coordinates)
+                                    
+            # Plot results on main GUI
+            GD_plot = self.master.ax.plot(*zip(*self.GD_coordinates), label='Gradient Descent', color='magenta', linestyle='-')
+            
+            # Redraw canvas
+            self.master.canvas.draw()
+            
+
             
         if self.GA_selected.get():
             print("Performing Genetic Algorithm Optimisation")
