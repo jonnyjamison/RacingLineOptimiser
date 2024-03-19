@@ -19,7 +19,6 @@ class RacingLineOptimiser:
     def run(self):
         # Start the GUI main loop
         self.gui.start()
-
             
 if __name__ == '__main__':
     #Create instance of the App

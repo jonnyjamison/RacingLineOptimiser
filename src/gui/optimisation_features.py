@@ -58,8 +58,9 @@ class OptimisationFeatures:
             # Perform Optimisation
                 # Call GD function
                 # inputs -> inner & outer bounds, max iterations
-            self.GD_coordinates = gradient_descent(self.upload_features.track_coordinates, self.upload_features.track_outer_coords, 
-            self.upload_features.track_inner_coords, self.max_iterations.get())
+            
+            self.GD_coordinates = gradient_descent(self.upload_features.track_coordinates,  
+            self.upload_features.track_inner_coords, self.upload_features.track_outer_coords, self.max_iterations.get())
             
             print(self.upload_features.track_coordinates - self.GD_coordinates)
                                     

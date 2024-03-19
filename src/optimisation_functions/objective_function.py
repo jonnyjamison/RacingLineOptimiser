@@ -1,24 +1,26 @@
 import numpy as np
 
-def objective_function(track_outer_coords, track_inner_coords, racing_line):
+def objective_function(outer_track, inner_track, racing_line):
     
-    # Penalty for deviating too far from the track boundaries
-    boundary_penalty = np.mean(np.linalg.norm(racing_line - (track_inner_coords + track_outer_coords) / 2, axis=1))
+    lambda_smoothness = 0.1  # Adjust this parameter to control the importance of smoothness
     
-    # Penalty for sharp changes in direction (lack of smoothness)
-    smoothness_penalty = np.mean(np.abs(np.diff(np.diff(racing_line, axis=0), axis=0)))
+    # Calculate curvature of the racing line
+    racing_line_curvature = calculate_curvature(racing_line[:, 0], racing_line[:, 1])
     
-    # Calculate cornering speeds based on curvature of the racing line
-    curvature = np.abs(np.gradient(np.arctan2(np.gradient(racing_line[:, 1]), np.gradient(racing_line[:, 0]))))
-    cornering_speed = 1 / (1 + curvature)
-    max_cornering_speed = np.max(cornering_speed)
+    # Calculate penalty for abrupt changes in curvature
+    curvature_change_penalty = np.abs(np.diff(racing_line_curvature))
     
-    # Normalize penalties and cornering speed to the range [0, 1]
-    boundary_penalty /= np.max(np.linalg.norm(track_outer_coords - track_inner_coords, axis=1))
-    smoothness_penalty /= np.max(np.abs(np.diff(track_inner_coords, axis=0)))
-    max_cornering_speed /= np.max(cornering_speed)
+    # Combine curvature and smoothness penalty
+    objective = np.sum(racing_line_curvature) + lambda_smoothness * np.sum(curvature_change_penalty)
     
-    # Combine penalties and cornering speed into an overall score
-    score = 1 - (0.3 * boundary_penalty + 0.3 * smoothness_penalty + 0.4 * (1 - max_cornering_speed)) # Default values: 0.3 0.3 0.4
-    
-    return score
+    return objective
+
+
+def calculate_curvature(x, y):
+    # Calculate curvature at each point along the racing line
+    dx_dt = np.gradient(x)
+    dy_dt = np.gradient(y)
+    d2x_dt2 = np.gradient(dx_dt)
+    d2y_dt2 = np.gradient(dy_dt)
+    curvature = np.abs(dx_dt * d2y_dt2 - dy_dt * d2x_dt2) / (dx_dt**2 + dy_dt**2)**1.5
+    return curvature

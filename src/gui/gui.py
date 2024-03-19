@@ -17,8 +17,15 @@ class GUI(tk.Tk):
         
         # Configure the main window
         self.title('Racing Line Optimser')
-        self.geometry(rlo.settings.window_size)
-                
+        #self.geometry(rlo.settings.window_size)
+        
+        # Get the dimensions of computer screen
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
+
+        # Set the window size to match the screen dimensions
+        self.geometry(f"{screen_width}x{screen_height}")
+        
         # Load and place logo 
         logo_image = pil_open('images/logo.png')
         self.logo = ImageTk.PhotoImage(logo_image)
