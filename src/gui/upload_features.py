@@ -16,35 +16,36 @@ class UploadFeatures:
         self.trackwidth = 0
 
         # Create label frame for upload track options        
-        self.upload_label_frame = LabelFrame(master, text='1. Please Select Track Coordinates')
-        self.upload_label_frame.grid(row=1, column=4, columnspan=10, rowspan=2, sticky='nsew', pady=40, padx=100)
+        self.upload_label_frame = LabelFrame(master, text='1. Please Select Track Coordinates', width=35)
+        self.upload_label_frame.grid(row=1, column=1, columnspan=1, rowspan=1, pady=10, padx=0, sticky='')
         
-        # Configure column weights to make the label frame expand
-        for i in range(10):  # Assuming you have 6 columns, adjust as needed 
-            master.columnconfigure(i, weight=1)
-        
+        # Configure column weights to make them of even sizes
+        # Makes sure widgets are exactly in the middle 
+        # col_uniform stops columns from resizing elements are updated
+        self.upload_label_frame.columnconfigure(0, weight=1, uniform="col_uniform")
+        self.upload_label_frame.columnconfigure(1, weight=1, uniform="col_uniform")
+                
         # Create an Upload button 
         self.upload_button = Button(self.upload_label_frame, text= 'Upload', command=self.upload_coordinates)
-        self.upload_button.grid(row=0, column=0,sticky='nw', pady=5, padx=10)
+        self.upload_button.grid(row=0, column=0,sticky='', pady=5, padx=2)
 
         # Create a label which updates to display track
         self.filepath_label = Label(self.upload_label_frame, text="Please Select File")
-        self.filepath_label.grid(row=0, column=1)
+        self.filepath_label.grid(row=0, column=1, sticky='w')
 
         # Create a label for Track Width
         self.trackwidth_label = Label(self.upload_label_frame, text="Track Width:")
-        self.trackwidth_label.grid(row=1, column=0) 
+        self.trackwidth_label.grid(row=1, column=0, sticky='e') 
 
         # Create input box for Track Width
         self.trackwidth = tk.IntVar()
-        self.trackwidth_input = tk.Entry(self.upload_label_frame, textvar=self.trackwidth)
-        self.trackwidth_input.grid(row=1, column=1, sticky='w', padx = 10) 
-
+        self.trackwidth_input = tk.Entry(self.upload_label_frame, textvar=self.trackwidth, width=3)
+        self.trackwidth_input.grid(row=1, column=1, sticky='w', padx = 10)
+        
         # Create button to plot track
         self.plot_button = Button(self.upload_label_frame, text= 'Generate', command=self.plot_coordinates)
-        self.plot_button.grid_propagate(False)
-        self.plot_button.grid(row=2, column=0, pady=5, padx=25)
-
+        #self.plot_button.grid_propagate(False)
+        self.plot_button.grid(row=2, column=0, columnspan=2, sticky='nsew', pady=5, padx=130)
 
 
     def upload_coordinates(self):
@@ -55,6 +56,12 @@ class UploadFeatures:
 
             # Update file path label
             filename = os.path.basename(file_path)
+            
+            # Shorten filename if it is too long
+            if len(filename) > 20:
+                filename = filename[:17]
+                filename += "..."
+            
             self.filepath_label.config(text=f"File: {filename}")
             
             # Call the upload_coordinates callback with file path
@@ -98,7 +105,7 @@ class UploadFeatures:
             self.get_track_boundaries()
                         
             inside_line = self.master.ax.plot(self.track_inner_x, self.track_inner_y, label='Inside Line', color='red', linestyle='-')
-            outside_line = self.master.ax.plot(self.track_outer_x, self.track_outer_y, label='Outside Line', color='green', linestyle='-')
+            outside_line = self.master.ax.plot(self.track_outer_x, self.track_outer_y, label='Outside Line', color='red', linestyle='-')
 
             # Redraw canvas
             self.master.canvas.draw()

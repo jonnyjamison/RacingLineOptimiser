@@ -10,6 +10,7 @@ class RacingLineOptimiser:
     """Overall class to manage app's assets and behavior."""
     
     def __init__(self):
+        
         # Create Settings instance
         self.settings = Settings()
         

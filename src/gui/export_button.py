@@ -12,11 +12,18 @@ class ExportButton(ttk.Button):
         self.export_callback = export_callback
         
         
-        self.button_width = self.winfo_reqwidth()
-        self.button_height = self.winfo_reqheight()
-        self.x_position = self.winfo_screenwidth() - self.button_width - 400
-        self.y_position = self.winfo_screenheight() - self.button_height - 250
-        self.place(x=self.x_position, y=self.y_position)
+        # self.button_width = self.winfo_reqwidth()
+        # self.button_height = self.winfo_reqheight()
+        # self.x_position = self.winfo_screenwidth() - self.button_width - 400
+        # self.y_position = self.winfo_screenheight() - self.button_height - 250
+        # self.place(x=self.x_position, y=self.y_position)
+        
+        
+        # Create button to export track coordinates 
+        self.plot_button = ttk.Button(master, text= 'Export Results', command=self.export, width=10)
+        #self.plot_button.grid_propagate(False)
+        self.plot_button.grid(row=3, column=1,  sticky='', pady=5, padx=25)
+        
                 
     
     def export(self):

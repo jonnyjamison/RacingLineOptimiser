@@ -4,13 +4,13 @@
 import numpy as np
 from optimisation_functions.objective_function import objective_function
 
-learning_rate = 5
-tolerance = 0.0000001
+learning_rate = 0.1
+tolerance = 0.000001
 
  # track_coords, track_outer_coords, track_inner_coords, max_iterations):
  
 
-def gradient_descent(racing_line, inner_bounds, outer_bounds, learning_rate=0.01, max_iterations=1000, tolerance=1e-5):
+def gradient_descent(racing_line, inner_bounds, outer_bounds, max_iterations):
     iteration = 0
     prev_cost = float('inf')
 
@@ -41,14 +41,20 @@ def gradient_descent(racing_line, inner_bounds, outer_bounds, learning_rate=0.01
 def curvature(p1, p2, p3):
     # Compute the curvature at p2 based on points p1, p2, and p3
     # Formula for curvature: |x1y2 + x2y3 + x3y1 - x1y3 - x2y1 - x3y2| / ((x1^2 + y1^2)(x2y3 - x3y2 + x3y1 - x1y3 + x1y2 - x2y1)^1.5)
-    x1, y1 = p1
-    x2, y2 = p2
-    x3, y3 = p3
-    numerator = abs(x1*y2 + x2*y3 + x3*y1 - x1*y3 - x2*y1 - x3*y2)
-    denominator = ((x1**2 + y1**2) * (x2*y3 - x3*y2 + x3*y1 - x1*y3 + x1*y2 - x2*y1)) ** 1.5
-    if denominator == 0:
-        return float('inf')
+    # Normalize coordinates
+    x1, y1 = p1 - np.mean([p1, p2, p3], axis=0)
+    x2, y2 = p2 - np.mean([p1, p2, p3], axis=0)
+    x3, y3 = p3 - np.mean([p1, p2, p3], axis=0)
+    
+    # Compute the curvature at p2 based on normalized points p1, p2, and p3
+    x1_sq, y1_sq = x1 ** 2, y1 ** 2
+    denominator = np.sqrt((x1_sq + y1_sq) * (x2 * y3 - x3 * y2 + x3 * y1 - x1 * y3 + x1 * y2 - x2 * y1) ** 2)
+    
+    # Check for zero or very small denominator
+    if np.isclose(denominator, 0):
+        return float('inf')  # Return a large value or infinity
     else:
+        numerator = abs(x1 * y2 + x2 * y3 + x3 * y1 - x1 * y3 - x2 * y1 - x3 * y2)
         return numerator / denominator
 
 def rate_of_change_of_curvature(racing_line):
@@ -65,7 +71,6 @@ def cost_function_rate_of_change_of_curvature(racing_line):
     # Define a cost function based on the rate of change of curvature
     roc_curvature = rate_of_change_of_curvature(racing_line)
     return np.sum(roc_curvature)
-
 
 
 def compute_gradient_rate_of_change_of_curvature(racing_line):
