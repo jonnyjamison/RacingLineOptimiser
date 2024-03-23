@@ -3,5 +3,5 @@ class Settings:
     
     def __init__(self):
         self.window_size = '1150x600' # width x height
-        self.bg_color = (230, 230, 230)
+        self.bg_color = (255, 255, 255)
 

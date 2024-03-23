@@ -1,5 +1,6 @@
 from PIL import ImageTk
 from PIL.Image import open as pil_open
+from tkinter import PhotoImage
 import tkinter as tk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
@@ -8,6 +9,8 @@ from gui.export_button import ExportButton
 from gui.optimisation_features import OptimisationFeatures
 
 class GUI(tk.Tk):
+    """Class to build all features upon the GUI"""
+    
     def __init__(self,rlo):
         super().__init__()
         
@@ -53,16 +56,12 @@ class GUI(tk.Tk):
         self.optimisation_features = OptimisationFeatures(self,self.upload_features)
         
         # Create an instance of ExportButton
-        export_button = ExportButton(self, export_callback=self.export_coordinates)
+        export_button = ExportButton(self, self.upload_features, self.optimisation_features)
         
 
     def start(self):
         # Start the Tkinter main loop
         self.mainloop()
-
-    def export_coordinates(self, file_path):
-        # Forward the call to the RacingLineOptimiser's method
-        rlo.export_coordinates(file_path)
         
     def update_figure_size(self, event):
         # Get the new size of the plot area

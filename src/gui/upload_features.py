@@ -13,6 +13,8 @@ class UploadFeatures:
 
         # Initialise variables
         self.track_coordinates = 0
+        self.track_inner_coords = 0
+        self.track_outer_coords = 0
         self.trackwidth = 0
 
         # Create label frame for upload track options        

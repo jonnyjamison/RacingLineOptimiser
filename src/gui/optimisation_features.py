@@ -4,12 +4,17 @@ from tkinter import LabelFrame, Radiobutton
 from optimisation_functions.gradient_descent import gradient_descent
 from optimisation_functions.genetic_algorithm import genetic_algorithm
 
+
 class OptimisationFeatures: 
+    """Class to manage optimisation features upon GUI & call algorithms"""
     
     def __init__(self,master,upload_features):
         
         self.master = master
         self.upload_features = upload_features
+        
+        # Create dictionary to store results
+        self.racing_line_results = {}
         
         # Create label frame for optimisation options        
         self.optimisation_label_frame = LabelFrame(master, text='2. Please Configure Optimisation')
@@ -60,40 +65,47 @@ class OptimisationFeatures:
         #     self.optimise_button.config(state=tk.DISABLED)
         
         
-    def optimise_track_coordinates(self): #, GD_selected, GA_selected, PS_selected
+    def optimise_track_coordinates(self):
 
         print(len(self.upload_features.track_inner_coords))
         
         if self.GD_selected.get():
             print("Performing Gradient Descent Optimisation")
-            tk.messagebox.showinfo("Please wait", "Gradient Descent optimisation in progress...")
             
-            # Perform Gradient Descent Optimisation            
-            self.GD_coordinates = gradient_descent(self.upload_features.track_coordinates,  
-            self.upload_features.track_inner_coords, self.upload_features.track_outer_coords, self.max_iterations.get())
             
-            print(self.upload_features.track_coordinates - self.GD_coordinates)
+            tk.messagebox.showinfo("Please wait", "Gradient Descent optimisation coming soon")
+             
+            ## Below is commented out due to issue with algorithm 
+            
+            #tk.messagebox.showinfo("Please wait", "Gradient Descent optimisation in progress...")
+            
+            # # Perform Gradient Descent Optimisation            
+            # self.GD_coordinates = gradient_descent(self.upload_features.track_coordinates,  
+            # self.upload_features.track_inner_coords, self.upload_features.track_outer_coords, self.max_iterations.get())
+            
+            # print(self.upload_features.track_coordinates - self.GD_coordinates)
                                     
-            # Plot results on main GUI
-            GD_plot = self.master.ax.plot(*zip(*self.GD_coordinates), label='Gradient Descent', color='magenta', linestyle='-')
+            # # Plot results on main GUI
+            # GD_plot = self.master.ax.plot(*zip(*self.GD_coordinates), label='Gradient Descent', color='magenta', linestyle='-')
             
-            # Redraw canvas
-            self.master.canvas.draw()
+            # # Redraw canvas
+            # self.master.canvas.draw()
             
-            self.master.after(0, tk.messagebox.showinfo, "Calculation Completed", "Gradient Descent completed!")
+            # self.master.after(0, tk.messagebox.showinfo, "Calculation Completed", "Gradient Descent completed!")
             
         if self.GA_selected.get():
             print("Performing Genetic Algorithm Optimisation")
             tk.messagebox.showinfo("Please wait", "Genetic Algorithm optimisation in progress...")
             
-            # Perform Gradient Descent Optimisation            
+            # Perform Genetic Algorithm Optimisation            
             self.GA_coordinates = genetic_algorithm(self.upload_features.track_coordinates,  
             self.upload_features.track_inner_coords, self.upload_features.track_outer_coords, self.max_iterations.get())
             
-            print(self.upload_features.track_coordinates - self.GA_coordinates)
+            # Add results to dictionary
+            self.racing_line_results['GA'] = self.GA_coordinates
                                     
             # Plot results on main GUI
-            GA_plot = self.master.ax.plot(*zip(*self.GA_coordinates), label='Genetic Algorithm', color='yellow', linestyle='-')
+            GA_plot = self.master.ax.plot(*zip(*self.GA_coordinates), label='Genetic Algorithm', color='black', linestyle='-')
             
             # Redraw canvas
             self.master.canvas.draw()
@@ -102,6 +114,8 @@ class OptimisationFeatures:
             
         if self.PS_selected.get():
             print("Performing Particle Swarm Optimisation")
+            
+            tk.messagebox.showinfo("Attention", "Particle Swarm optimisaiton not yet available")
             
         
         
