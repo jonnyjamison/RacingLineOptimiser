@@ -8,7 +8,8 @@ Really simple project to teach myself OOP GUI creation, which has the following 
 
 ** Disclaimer - the focus of this project was working with OOP GUI creation, therefore use the optimisation tools with caution!!
 
-![image](https://github.com/jonnyjamison/RacingLineOptimiser/assets/61748193/18785c0e-5038-4c07-9f7c-4242e31a1855)
+![image](https://github.com/jonnyjamison/RacingLineOptimiser/assets/61748193/b5ae7e85-15b2-41b9-8cc1-c861136dfaac)
+
 
 
 
